@@ -9,6 +9,7 @@ Analyzes datasets before validation.
 Author : InsightForge
 Version : 0.1
 """
+import pandas as pd
 
 class DataProfiler:
 
