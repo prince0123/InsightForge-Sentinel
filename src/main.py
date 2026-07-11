@@ -5,12 +5,13 @@ Main Application
 ============================================================
 
 Author  : InsightForge
-Version : 0.4.0
+Version : 0.5.0
 """
 
 from pathlib import Path
 
 from connectors.file_connector import FileConnector
+from preprocessing.preprocessor import Preprocessor
 from profiling.profiler import DataProfiler
 from analyzers.primary_key_analyzer import PrimaryKeyAnalyzer
 from analyzers.business_type_analyzer import BusinessTypeAnalyzer
@@ -26,6 +27,8 @@ def main():
     reporter = ConsoleReporter()
 
     connector = FileConnector()
+
+    preprocessor = Preprocessor()
 
     profiler = DataProfiler()
 
@@ -55,7 +58,17 @@ def main():
     df = connector.load(file_path)
 
     # --------------------------------------------------------
-    # Profile Dataset
+    # NEW : Preprocessing
+    # --------------------------------------------------------
+
+    print("\nRunning Preprocessing Engine...")
+
+    df = preprocessor.process(df)
+
+    print("Preprocessing Completed Successfully")
+
+    # --------------------------------------------------------
+    # Dataset Profiling
     # --------------------------------------------------------
 
     profile = profiler.profile(df)
