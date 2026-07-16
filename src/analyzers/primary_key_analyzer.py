@@ -4,10 +4,12 @@ InsightForge Sentinel
 Primary Key Analyzer
 ============================================================
 
-Detects possible primary key columns.
+Purpose:
+    Identify potential primary key columns using explainable,
+    evidence-based scoring.
 
 Author : InsightForge
-Version : 0.1
+Version: 2.0
 """
 
 import pandas as pd
@@ -15,66 +17,270 @@ import pandas as pd
 
 class PrimaryKeyAnalyzer:
 
-    def analyze(self, df: pd.DataFrame) -> list:
+    def analyze(self, df: pd.DataFrame):
 
-        candidates = []
-
-        total_rows = len(df)
+        results = []
 
         for column in df.columns:
 
-            null_count = df[column].isnull().sum()
+            result = self._analyze_column(df, column)
 
-            duplicate_count = df[column].duplicated().sum()
+            results.append(result)
 
-            unique_count = df[column].nunique()
+        return {
+            "analyzer": "PrimaryKeyAnalyzer",
+            "status": "SUCCESS",
+            "results": results
+        }
 
-            uniqueness = unique_count / total_rows
+    # ==========================================================
+    # Internal Methods
+    # ==========================================================
 
-            score = 0
-            reasons = []
+    def _analyze_column(self, df, column):
 
-            # No NULL values
-            if null_count == 0:
-                score += 30
-                reasons.append("No NULL values")
+        series = df[column]
 
-            # No duplicates
-            if duplicate_count == 0:
-                score += 40
-                reasons.append("No duplicate values")
+        null_count = int(series.isnull().sum())
 
-            # High uniqueness
-            if uniqueness >= 0.95:
-                score += 20
-                reasons.append("High uniqueness")
+        duplicate_count = int(series.duplicated().sum())
 
-            # Column name contains ID
-            if "id" in column.lower():
-                score += 10
-                reasons.append("Column name contains 'ID'")
+        unique_count = int(series.nunique(dropna=True))
 
-            candidates.append({
+        total_rows = len(series)
 
-                "column": column,
+        uniqueness_ratio = 0
 
-                "score": score,
+        if total_rows > 0:
+            uniqueness_ratio = unique_count / total_rows
 
-                "confidence": f"{score}%",
+        evidence = []
 
-                "nulls": int(null_count),
+        confidence = 0
 
-                "duplicates": int(duplicate_count),
+        # ------------------------------------------------------
+        # Rule 1
+        # No NULL Values
+        # ------------------------------------------------------
 
-                "unique_values": int(unique_count),
+        passed = null_count == 0
 
-                "reasons": reasons
+        evidence.append({
 
-            })
+            "rule": "No NULL values",
 
-        candidates.sort(
-            key=lambda x: x["score"],
-            reverse=True
+            "weight": 25,
+
+            "passed": passed
+
+        })
+
+        if passed:
+            confidence += 25
+
+        # ------------------------------------------------------
+        # Rule 2
+        # No Duplicate Values
+        # ------------------------------------------------------
+
+        passed = duplicate_count == 0
+
+        evidence.append({
+
+            "rule": "No duplicate values",
+
+            "weight": 35,
+
+            "passed": passed
+
+        })
+
+        if passed:
+            confidence += 35
+
+        # ------------------------------------------------------
+        # Rule 3
+        # Identifier Name
+        # ------------------------------------------------------
+
+        identifier_keywords = [
+
+            "id",
+            "code",
+            "number",
+            "no"
+
+        ]
+
+        passed = any(
+
+            keyword in column.lower()
+
+            for keyword in identifier_keywords
+
         )
 
-        return candidates
+        evidence.append({
+
+            "rule": "Identifier style column name",
+
+            "weight": 20,
+
+            "passed": passed
+
+        })
+
+        if passed:
+            confidence += 20
+
+        # ------------------------------------------------------
+        # Rule 4
+        # High Uniqueness
+        # ------------------------------------------------------
+
+        passed = uniqueness_ratio >= 0.95
+
+        evidence.append({
+
+            "rule": "High uniqueness (>95%)",
+
+            "weight": 20,
+
+            "passed": passed
+
+        })
+
+        if passed:
+            confidence += 20
+
+        # ------------------------------------------------------
+        # Risk
+        # ------------------------------------------------------
+
+        if confidence >= 90:
+
+            risk = "LOW"
+
+        elif confidence >= 70:
+
+            risk = "MEDIUM"
+
+        else:
+
+            risk = "HIGH"
+
+        # ------------------------------------------------------
+        # Severity
+        # ------------------------------------------------------
+
+        if confidence >= 90:
+
+            severity = "LOW"
+
+        elif confidence >= 70:
+
+            severity = "MEDIUM"
+
+        else:
+
+            severity = "HIGH"
+
+        # ------------------------------------------------------
+        # Recommendations
+        # ------------------------------------------------------
+
+        recommendations = []
+
+        if null_count > 0:
+
+            recommendations.append(
+                "Populate missing values before using this column as a primary key."
+            )
+
+        if duplicate_count > 0:
+
+            recommendations.append(
+                "Remove duplicate values to ensure uniqueness."
+            )
+
+        if not any(
+            keyword in column.lower()
+            for keyword in identifier_keywords
+        ):
+
+            recommendations.append(
+                "Consider renaming the column if it represents a business identifier."
+            )
+
+        if uniqueness_ratio < 0.95:
+
+            recommendations.append(
+                "Increase uniqueness before selecting this column as a primary key."
+            )
+
+        if len(recommendations) == 0:
+
+            recommendations.append(
+                "Column is a strong primary key candidate."
+            )
+
+        # ------------------------------------------------------
+        # Business Impact
+        # ------------------------------------------------------
+
+        business_impact = []
+
+        if duplicate_count > 0:
+
+            business_impact.append(
+                "Duplicate identifiers can create incorrect joins."
+            )
+
+            business_impact.append(
+                "Reports may double-count business transactions."
+            )
+
+        if null_count > 0:
+
+            business_impact.append(
+                "Missing identifiers reduce record traceability."
+            )
+
+        if len(business_impact) == 0:
+
+            business_impact.append(
+                "Low business risk detected."
+            )
+
+        # ------------------------------------------------------
+
+        return {
+
+            "column": column,
+
+            "confidence": confidence,
+
+            "risk": risk,
+
+            "severity": severity,
+
+            "status": "SUCCESS",
+
+            "null_values": null_count,
+
+            "duplicate_values": duplicate_count,
+
+            "unique_values": unique_count,
+
+            "uniqueness_ratio": round(
+                uniqueness_ratio * 100,
+                2
+            ),
+
+            "evidence": evidence,
+
+            "recommendations": recommendations,
+
+            "business_impact": business_impact
+
+        }
