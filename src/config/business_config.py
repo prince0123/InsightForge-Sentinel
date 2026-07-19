@@ -1,0 +1,13 @@
+"""
+Business Reporting Configuration
+"""
+
+SHOW_HEALTH_BAR = True
+
+SHOW_EXECUTIVE_SUMMARY = True
+
+SHOW_BUSINESS_IMPACT = True
+
+SHOW_RECOMMENDATIONS = True
+
+SHOW_CONFIDENCE = True

@@ -1,57 +1,57 @@
 [
     {
         "rule_id": "RET-001",
-        "name": "Order ID must be unique",
+        "name": "{column} must be unique",
         "business_type": "Identifier",
         "validation": "UNIQUE",
         "severity": "HIGH",
-        "business_impact": "Duplicate orders may result in incorrect revenue reporting.",
-        "recommendation": "Remove duplicate Order_ID values before publishing reports.",
+        "business_impact": "Duplicate values in {column} reduce data integrity and may impact downstream reporting.",
+        "recommendation": "Remove duplicate values from {column}.",
         "enabled": true,
-        "version": "1.0"
+        "version": "1.1"
     },
     {
         "rule_id": "RET-002",
-        "name": "Order ID cannot be NULL",
+        "name": "{column} cannot be NULL",
         "business_type": "Identifier",
         "validation": "NOT_NULL",
         "severity": "HIGH",
-        "business_impact": "Missing identifiers reduce record traceability.",
-        "recommendation": "Populate missing Order_ID values.",
+        "business_impact": "Missing values in {column} reduce record traceability.",
+        "recommendation": "Populate missing values in {column}.",
         "enabled": true,
-        "version": "1.0"
+        "version": "1.1"
     },
     {
         "rule_id": "RET-003",
-        "name": "Invoice Amount must be positive",
+        "name": "{column} must be positive",
         "business_type": "Currency",
         "validation": "POSITIVE",
         "severity": "HIGH",
-        "business_impact": "Negative invoice amounts affect financial reporting.",
-        "recommendation": "Correct negative invoice values before reporting.",
+        "business_impact": "Negative values in {column} may affect financial reporting and analytics.",
+        "recommendation": "Correct negative values in {column}.",
         "enabled": true,
-        "version": "1.0"
+        "version": "1.1"
     },
     {
         "rule_id": "RET-004",
-        "name": "Order Date cannot be in the future",
+        "name": "{column} cannot be in the future",
         "business_type": "Date",
         "validation": "NOT_FUTURE_DATE",
         "severity": "MEDIUM",
-        "business_impact": "Future order dates may distort operational reporting.",
-        "recommendation": "Verify incorrect order dates.",
+        "business_impact": "Future dates in {column} may distort operational reporting.",
+        "recommendation": "Verify and correct future dates in {column}.",
         "enabled": true,
-        "version": "1.0"
+        "version": "1.1"
     },
     {
         "rule_id": "RET-005",
-        "name": "Email must be valid",
+        "name": "{column} must contain valid email addresses",
         "business_type": "Email Address",
         "validation": "VALID_EMAIL",
         "severity": "MEDIUM",
-        "business_impact": "Invalid email addresses reduce communication reliability.",
-        "recommendation": "Correct invalid email addresses.",
+        "business_impact": "Invalid values in {column} reduce communication reliability.",
+        "recommendation": "Correct invalid email addresses in {column}.",
         "enabled": true,
-        "version": "1.0"
+        "version": "1.1"
     }
 ]

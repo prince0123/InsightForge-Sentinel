@@ -13,6 +13,9 @@ Version : 4.0
 """
 
 
+import health
+
+
 class ConsoleReporter:
 
     # ======================================================
@@ -255,6 +258,70 @@ class ConsoleReporter:
             print(f"• {result.recommendation}")
 
             print("-" * 70)
+
+# ======================================================
+# Dataset Health
+# ======================================================
+
+    def show_health_score(
+    self,
+    health
+    ):
+
+        print("\n" + "=" * 70)
+        print("DATASET HEALTH")
+        print("=" * 70)
+
+        print(
+            f"Overall Score      : "
+            f"{health.overall_score}/100"
+            )
+
+        print(
+        f"Risk Level         : "
+        f"{health.risk_level}"
+        )
+
+        print()
+
+        print(
+            f"Completeness       : "
+            f"{health.completeness}%"
+        )
+
+        print(
+            f"Uniqueness         : "
+            f"{health.uniqueness}%"
+        )
+
+        print(
+            f"Validity           : "
+            f"{health.validity}%"
+        )
+
+        print(
+            f"Consistency        : "
+            f"{health.consistency}%"
+        )
+
+        print("\nTop Issues")
+        print("-" * 50)
+
+        if health.issues:
+
+            for issue in health.issues:
+
+                print(f"• {issue}")
+
+        else:
+
+            print("No issues detected.")
+
+        print("\nSummary")
+        print("-" * 50)
+
+        print(health.summary)
+
     # ======================================================
     # Footer
     # ======================================================

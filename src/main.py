@@ -28,8 +28,10 @@ Version : 0.8.0
 """
 
 from pathlib import Path
+import profile
 
 from connectors.file_connector import FileConnector
+from health import health_engine
 from intelligence import schema_engine
 from intelligence.schema_engine import SchemaEngine
 from preprocessing.preprocessor import Preprocessor
@@ -42,7 +44,7 @@ from rules.rule_engine import RuleEngine
 from rules.validation.validation_engine import ValidationEngine
 
 from reporting.console_reporter import ConsoleReporter
-
+from health.health_engine import HealthEngine
 
 def main():
 
@@ -63,6 +65,8 @@ def main():
     rule_engine = RuleEngine()
 
     validation_engine = ValidationEngine()
+
+    health_engine = HealthEngine()
 
     reporter = ConsoleReporter()
 
@@ -168,6 +172,15 @@ def main():
         knowledge=knowledge,
         execution_plan=execution_plan
     )
+
+    print("\nRunning Dataset Health Engine...")
+
+    health_score = health_engine.run(
+    profile=profile,
+    validation_output=validation_output
+    )
+
+    print("✓ Dataset Health Complete")
     print(
         f"✓ Executed {validation_output['rules_executed']} validation tasks"
     )
@@ -188,6 +201,10 @@ def main():
 
     reporter.show_validation_results(
         validation_output
+    )
+
+    reporter.show_health_score(
+    health_score
     )
 
     # =====================================================

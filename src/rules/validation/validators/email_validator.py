@@ -8,7 +8,7 @@ Purpose:
     Validates email address format.
 
 Author : InsightForge
-Version : 1.0
+Version : 2.0
 """
 
 import re
@@ -31,8 +31,22 @@ class EmailValidator(BaseValidator):
         task
     ):
 
+        # ==================================================
+        # Task Information
+        # ==================================================
+
         column = task.column
         rule = task.rule
+
+        text = self.format_rule_text(
+            rule=rule,
+            column=column,
+            business_type=task.business_type
+        )
+
+        # ==================================================
+        # Validation Logic
+        # ==================================================
 
         failed_rows = []
         failed_values = []
@@ -70,11 +84,15 @@ class EmailValidator(BaseValidator):
                 f"{failed_count} invalid email address(es) found."
             )
 
+        # ==================================================
+        # Validation Result
+        # ==================================================
+
         return ValidationResult(
 
             rule_id=rule.rule_id,
 
-            rule_name=rule.name,
+            rule_name=text["rule_name"],
 
             column=column,
 
@@ -88,9 +106,9 @@ class EmailValidator(BaseValidator):
 
             message=message,
 
-            recommendation=rule.recommendation,
+            recommendation=text["recommendation"],
 
-            business_impact=rule.business_impact,
+            business_impact=text["business_impact"],
 
             failed_count=failed_count,
 

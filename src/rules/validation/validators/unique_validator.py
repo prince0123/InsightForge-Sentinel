@@ -8,7 +8,7 @@ Purpose:
     Validates that a column contains unique values.
 
 Author : InsightForge
-Version : 1.0
+Version : 2.0
 """
 
 from models.validation_result import ValidationResult
@@ -24,8 +24,22 @@ class UniqueValidator(BaseValidator):
         task
     ):
 
+        # ==================================================
+        # Task Information
+        # ==================================================
+
         column = task.column
         rule = task.rule
+
+        text = self.format_rule_text(
+            rule=rule,
+            column=column,
+            business_type=task.business_type
+        )
+
+        # ==================================================
+        # Validation Logic
+        # ==================================================
 
         duplicates = knowledge.get_fact(
             column,
@@ -39,6 +53,12 @@ class UniqueValidator(BaseValidator):
 
             message = "No duplicate values found."
 
+            failed_count = 0
+
+            failed_rows = []
+
+            failed_values = []
+
         else:
 
             status = "FAIL"
@@ -47,11 +67,23 @@ class UniqueValidator(BaseValidator):
                 f"{duplicates} duplicate value(s) found."
             )
 
+            failed_count = duplicates
+
+            # Will be implemented in Sprint 11
+            failed_rows = []
+
+            # Will be implemented in Sprint 11
+            failed_values = []
+
+        # ==================================================
+        # Result
+        # ==================================================
+
         return ValidationResult(
 
             rule_id=rule.rule_id,
 
-            rule_name=rule.name,
+            rule_name=text["rule_name"],
 
             column=column,
 
@@ -65,10 +97,14 @@ class UniqueValidator(BaseValidator):
 
             message=message,
 
-            recommendation=rule.recommendation,
+            recommendation=text["recommendation"],
 
-            business_impact=rule.business_impact,
+            business_impact=text["business_impact"],
 
-            failed_count=duplicates
+            failed_count=failed_count,
+
+            failed_rows=failed_rows,
+
+            failed_values=failed_values
 
         )

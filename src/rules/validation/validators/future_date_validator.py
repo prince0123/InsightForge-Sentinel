@@ -8,12 +8,12 @@ Purpose:
     Validates that dates are not in the future.
 
 Author : InsightForge
-Version : 1.0
+Version : 2.0
 """
 
-import pandas as pd
-
 from datetime import datetime
+
+import pandas as pd
 
 from models.validation_result import ValidationResult
 from rules.validation.base_validator import BaseValidator
@@ -28,8 +28,22 @@ class FutureDateValidator(BaseValidator):
         task
     ):
 
+        # ==================================================
+        # Task Information
+        # ==================================================
+
         column = task.column
         rule = task.rule
+
+        text = self.format_rule_text(
+            rule=rule,
+            column=column,
+            business_type=task.business_type
+        )
+
+        # ==================================================
+        # Validation Logic
+        # ==================================================
 
         failed_rows = []
         failed_values = []
@@ -53,7 +67,6 @@ class FutureDateValidator(BaseValidator):
                     failed_values.append(str(date_value.date()))
 
             except Exception:
-
                 continue
 
         failed_count = len(failed_rows)
@@ -72,11 +85,15 @@ class FutureDateValidator(BaseValidator):
                 f"{failed_count} future date(s) found."
             )
 
+        # ==================================================
+        # Validation Result
+        # ==================================================
+
         return ValidationResult(
 
             rule_id=rule.rule_id,
 
-            rule_name=rule.name,
+            rule_name=text["rule_name"],
 
             column=column,
 
@@ -90,9 +107,9 @@ class FutureDateValidator(BaseValidator):
 
             message=message,
 
-            recommendation=rule.recommendation,
+            recommendation=text["recommendation"],
 
-            business_impact=rule.business_impact,
+            business_impact=text["business_impact"],
 
             failed_count=failed_count,
 

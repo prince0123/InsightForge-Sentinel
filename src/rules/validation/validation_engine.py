@@ -12,6 +12,8 @@ Author : InsightForge
 Version : 3.0
 """
 
+from wsgiref.validate import validator
+
 from models.validation_result import ValidationResult
 from rules.validation.validator_registry import ValidatorRegistry
 
@@ -80,23 +82,28 @@ class ValidationEngine:
     # ======================================================
 
     def _execute_task(
-        self,
-        dataframe,
-        knowledge,
-        task
+    self,
+    dataframe,
+    knowledge,
+    task
     ):
-
+        
         validation = task.rule.validation.upper()
 
         validator = self.registry.get(validation)
 
+    # --------------------------------------------------
+    # Validator not registered
+    # --------------------------------------------------
+
         if validator is None:
-
             return ValidationResult(
-
+                
                 rule_id=task.rule.rule_id,
 
-                rule_name=task.rule.name,
+                rule_name=task.rule.name.format(
+                    column=task.column
+                    ),
 
                 column=task.column,
 
@@ -110,14 +117,22 @@ class ValidationEngine:
 
                 message=f"No validator registered for '{validation}'.",
 
-                recommendation=task.rule.recommendation,
+                recommendation=task.rule.recommendation.format(
+                    column=task.column
+                    ),
 
-                business_impact=task.rule.business_impact
+                business_impact=task.rule.business_impact.format(
+                    column=task.column
+                    )
 
             )
 
+    # --------------------------------------------------
+    # Delegate to registered validator
+    # --------------------------------------------------
+
         return validator.validate(
-            dataframe,
-            knowledge,
-            task
+        dataframe,
+        knowledge,
+        task
         )
