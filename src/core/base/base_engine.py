@@ -1,7 +1,14 @@
 """
 ============================================================
+InsightForge Sentinel
 Base Engine
 ============================================================
+
+Purpose:
+    Defines the standard contract for every Sentinel engine.
+
+Author : InsightForge
+Version : 1.0.0
 """
 
 from abc import ABC
@@ -13,24 +20,35 @@ from core.pipeline.pipeline_context import (
 
 
 class BaseEngine(ABC):
+    """
+    Base class for all Sentinel engines.
 
-    name = "Base Engine"
+    Every engine must implement run() and
+    return the updated PipelineContext.
+    """
 
-    version = "1.0"
+    name: str = "Base Engine"
+
+    version: str = "1.0.0"
+
+    description: str = ""
 
     @abstractmethod
     def run(
-
         self,
-
         context: PipelineContext
-
     ) -> PipelineContext:
-
         """
-        Execute engine.
+        Execute the engine.
 
-        Returns updated PipelineContext.
+        Parameters
+        ----------
+        context
+            Shared pipeline context.
+
+        Returns
+        -------
+        PipelineContext
+            Updated pipeline context.
         """
-
         raise NotImplementedError
