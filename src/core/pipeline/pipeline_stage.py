@@ -8,7 +8,7 @@ Purpose:
     Defines the standard contract for every pipeline stage.
 
 Author : InsightForge
-Version : 1.0.0
+Version : 1.1.0
 """
 
 from abc import ABC
@@ -21,34 +21,80 @@ from core.pipeline.pipeline_context import (
 
 class PipelineStage(ABC):
     """
-    Base class for all pipeline stages.
-
-    A stage is responsible for orchestrating one
-    step of the Sentinel pipeline.
+    Base class for all Sentinel pipeline stages.
     """
 
-    name: str = "Pipeline Stage"
+    version = "1.1.0"
 
-    description: str = ""
+    description = ""
 
-    version: str = "1.0.0"
+    # ==================================================
+    # Stage Name
+    # ==================================================
+
+    @property
+    def stage_name(self) -> str:
+        """
+        Human-readable stage name.
+
+        Example
+
+        HealthStage
+
+        becomes
+
+        Health Stage
+        """
+
+        name = self.__class__.__name__
+
+        if name.endswith("Stage"):
+            name = name[:-5]
+
+        result = ""
+
+        for index, character in enumerate(name):
+
+            if (
+                index > 0
+                and character.isupper()
+            ):
+                result += " "
+
+            result += character
+
+        return result
+
+    # ==================================================
+    # Before Execute
+    # ==================================================
+
+    def before_execute(
+        self,
+        context: PipelineContext
+    ) -> PipelineContext:
+
+        return context
+
+    # ==================================================
+    # Execute
+    # ==================================================
 
     @abstractmethod
     def execute(
         self,
         context: PipelineContext
     ) -> PipelineContext:
-        """
-        Execute the pipeline stage.
 
-        Parameters
-        ----------
-        context
-            Shared pipeline context.
-
-        Returns
-        -------
-        PipelineContext
-            Updated pipeline context.
-        """
         raise NotImplementedError
+
+    # ==================================================
+    # After Execute
+    # ==================================================
+
+    def after_execute(
+        self,
+        context: PipelineContext
+    ) -> PipelineContext:
+
+        return context

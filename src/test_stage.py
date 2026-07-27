@@ -1,5 +1,14 @@
 from core.pipeline.pipeline_stage import PipelineStage
+from core.pipeline.pipeline_context import PipelineContext
 
-print(PipelineStage.name)
-print(PipelineStage.version)
-PipelineStage()
+
+class HealthStage(PipelineStage):
+
+    def execute(
+        self,
+        context
+    ):
+        return context
+
+
+print(HealthStage().stage_name)

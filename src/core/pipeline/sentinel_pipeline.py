@@ -58,6 +58,10 @@ class SentinelPipeline:
 
         for stage in self.registry.get_stages():
 
+            context = stage.before_execute(context)
+
             context = stage.execute(context)
+
+            context = stage.after_execute(context)
 
         return context
