@@ -5,8 +5,7 @@ Configuration Service
 ============================================================
 
 Purpose:
-    Provides a centralized interface for accessing all
-    Sentinel configuration.
+    Central access point for Sentinel configuration.
 
 Author : InsightForge
 Version : 1.0
@@ -36,28 +35,28 @@ from config.business_config import (
 
 class ConfigurationService:
 
-    # ==================================================
-    # Health Configuration
-    # ==================================================
+    def __init__(self):
+        pass
+
+    # =====================================================
+    # Health
+    # =====================================================
 
     @property
     def health_weights(self):
-
         return HEALTH_WEIGHTS
 
     @property
     def severity_penalties(self):
-
         return SEVERITY_PENALTIES
 
     @property
     def risk_levels(self):
-
         return RISK_LEVELS
 
-    # ==================================================
-    # Validation Configuration
-    # ==================================================
+    # =====================================================
+    # Validation
+    # =====================================================
 
     @property
     def validation(self):
@@ -74,9 +73,9 @@ class ConfigurationService:
 
         }
 
-    # ==================================================
-    # Reporting Configuration
-    # ==================================================
+    # =====================================================
+    # Business Reporting
+    # =====================================================
 
     @property
     def reporting(self):

@@ -9,14 +9,25 @@ Purpose:
     human-readable format.
 
 Author : InsightForge
-Version : 4.0
+Version : 5.0
 """
 
-
-import health
+from reporting.sections.executive_dashboard_section import (
+    ExecutiveDashboardSection
+)
 
 
 class ConsoleReporter:
+
+    # ======================================================
+    # Constructor
+    # ======================================================
+
+    def __init__(self):
+
+        self.executive_dashboard = (
+            ExecutiveDashboardSection()
+        )
 
     # ======================================================
     # Header
@@ -29,10 +40,26 @@ class ConsoleReporter:
         print("=" * 70)
 
     # ======================================================
+    # Executive Dashboard
+    # ======================================================
+
+    def show_executive_dashboard(
+        self,
+        assessment
+    ):
+
+        self.executive_dashboard.render(
+            assessment
+        )
+
+    # ======================================================
     # Dataset Profile
     # ======================================================
 
-    def show_profile(self, profile):
+    def show_profile(
+        self,
+        profile
+    ):
 
         print("\n" + "=" * 70)
         print("DATASET PROFILE")
@@ -65,7 +92,10 @@ class ConsoleReporter:
     # Primary Key Analysis
     # ======================================================
 
-    def show_primary_keys(self, analyzer_result):
+    def show_primary_keys(
+        self,
+        analyzer_result
+    ):
 
         print("\n" + "=" * 70)
         print("PRIMARY KEY ANALYSIS")
@@ -82,7 +112,10 @@ class ConsoleReporter:
             print(f"\nNULL Values         : {result['null_values']}")
             print(f"Duplicate Values    : {result['duplicate_values']}")
             print(f"Unique Values       : {result['unique_values']}")
-            print(f"Uniqueness Ratio    : {result['uniqueness_ratio']}%")
+            print(
+                f"Uniqueness Ratio    : "
+                f"{result['uniqueness_ratio']}%"
+            )
 
             print("\nEvidence")
             print("-" * 50)
@@ -114,7 +147,10 @@ class ConsoleReporter:
     # Business Type Analysis
     # ======================================================
 
-    def show_business_types(self, analyzer_result):
+    def show_business_types(
+        self,
+        analyzer_result
+    ):
 
         print("\n" + "=" * 70)
         print("BUSINESS TYPE ANALYSIS")
@@ -149,7 +185,10 @@ class ConsoleReporter:
     # Schema Intelligence
     # ======================================================
 
-    def show_schema_profiles(self, column_profiles):
+    def show_schema_profiles(
+        self,
+        column_profiles
+    ):
 
         print("\n" + "=" * 70)
         print("SCHEMA INTELLIGENCE")
@@ -164,6 +203,7 @@ class ConsoleReporter:
 
             print(f"\nNullable            : {profile.nullable}")
             print(f"Unique              : {profile.unique}")
+
             print(
                 f"Uniqueness Ratio    : "
                 f"{profile.uniqueness_ratio}%"
@@ -175,7 +215,6 @@ class ConsoleReporter:
             if profile.recommended_validators:
 
                 for validator in profile.recommended_validators:
-
                     print(f"• {validator}")
 
             else:
@@ -183,11 +222,15 @@ class ConsoleReporter:
                 print("No recommendations.")
 
             print("=" * 70)
+
     # ======================================================
     # Validation Results
+    # ======================================================
 
-
-    def show_validation_results(self, validation_output):
+    def show_validation_results(
+        self,
+        validation_output
+    ):
 
         print("\n" + "=" * 70)
         print("VALIDATION RESULTS")
@@ -197,6 +240,7 @@ class ConsoleReporter:
         print(f"Rules Executed     : {validation_output['rules_executed']}")
         print(f"Passed             : {validation_output['passed']}")
         print(f"Failed             : {validation_output['failed']}")
+
         print(
             f"Not Implemented    : "
             f"{validation_output.get('not_implemented', 0)}"
@@ -207,12 +251,10 @@ class ConsoleReporter:
 
         for result in validation_output["results"]:
 
-            status = result.status
-
-            if status == "PASS":
+            if result.status == "PASS":
                 icon = "✓"
 
-            elif status == "FAIL":
+            elif result.status == "FAIL":
                 icon = "✗"
 
             else:
@@ -230,7 +272,6 @@ class ConsoleReporter:
             print(f"Message            : {result.message}")
 
             if result.failed_count > 0:
-
                 print(f"Failed Count       : {result.failed_count}")
 
             if result.failed_rows:
@@ -259,13 +300,13 @@ class ConsoleReporter:
 
             print("-" * 70)
 
-# ======================================================
-# Dataset Health
-# ======================================================
+    # ======================================================
+    # Dataset Health
+    # ======================================================
 
     def show_health_score(
-    self,
-    health
+        self,
+        health
     ):
 
         print("\n" + "=" * 70)
@@ -275,11 +316,11 @@ class ConsoleReporter:
         print(
             f"Overall Score      : "
             f"{health.overall_score}/100"
-            )
+        )
 
         print(
-        f"Risk Level         : "
-        f"{health.risk_level}"
+            f"Risk Level         : "
+            f"{health.risk_level}"
         )
 
         print()
@@ -310,7 +351,6 @@ class ConsoleReporter:
         if health.issues:
 
             for issue in health.issues:
-
                 print(f"• {issue}")
 
         else:

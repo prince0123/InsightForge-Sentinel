@@ -1,0 +1,1 @@
+VERSION = "Sentinel Design System 1.0"
