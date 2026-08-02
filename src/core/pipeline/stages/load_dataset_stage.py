@@ -32,7 +32,7 @@ class LoadDatasetStage(PipelineStage):
 
     def __init__(self):
 
-        self.connector = FileConnector()
+        self.connector = connector
 
     # ==================================================
 

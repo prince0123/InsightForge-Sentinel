@@ -28,54 +28,76 @@ class PipelineBuilder:
     # Build Pipeline
     # ==================================================
 
-    def build(
-        self
-    ) -> SentinelPipeline:
+    def build(self):
+
+        from core.pipeline.stages.load_dataset_stage import (
+            LoadDatasetStage
+        )
+
+        from core.pipeline.stages.preprocessing_stage import (
+            PreprocessingStage
+        )
+
+        from core.pipeline.stages.profiling_stage import (
+            ProfilingStage
+        )
 
         pipeline = SentinelPipeline()
 
-        # ----------------------------------------------
-        # Register Stages
-        # ----------------------------------------------
-        #
-        # Sprint 17.2
-        # These will be added gradually.
-        #
-        # pipeline.add_stage(
-        #     LoadDatasetStage()
-        # )
-        #
-        # pipeline.add_stage(
-        #     PreprocessingStage()
-        # )
-        #
-        # pipeline.add_stage(
-        #     ProfilingStage()
-        # )
-        #
-        # pipeline.add_stage(
-        #     InferenceStage()
-        # )
-        #
-        # pipeline.add_stage(
-        #     SchemaStage()
-        # )
-        #
-        # pipeline.add_stage(
-        #     RuleStage()
-        # )
-        #
-        # pipeline.add_stage(
-        #     ValidationStage()
-        # )
-        #
-        # pipeline.add_stage(
-        #     HealthStage()
-        # )
-        #
-        # pipeline.add_stage(
-        #     ReportingStage()
-        # )
-        #
+        pipeline.add_stage(
+            LoadDatasetStage()
+        )
+
+        pipeline.add_stage(
+            PreprocessingStage()
+        )
+
+        pipeline.add_stage(
+            ProfilingStage()
+        )
 
         return pipeline
+
+            # ----------------------------------------------
+            # Register Stages
+            # ----------------------------------------------
+            #
+            # Sprint 17.2
+            # These will be added gradually.
+            #
+            # pipeline.add_stage(
+            #     LoadDatasetStage()
+            # )
+            #
+            # pipeline.add_stage(
+            #     PreprocessingStage()
+            # )
+            #
+            # pipeline.add_stage(
+            #     ProfilingStage()
+            # )
+            #
+            # pipeline.add_stage(
+            #     InferenceStage()
+            # )
+            #
+            # pipeline.add_stage(
+            #     SchemaStage()
+            # )
+            #
+            # pipeline.add_stage(
+            #     RuleStage()
+            # )
+            #
+            # pipeline.add_stage(
+            #     ValidationStage()
+            # )
+            #
+            # pipeline.add_stage(
+            #     HealthStage()
+            # )
+            #
+            # pipeline.add_stage(
+            #     ReportingStage()
+            # )
+        

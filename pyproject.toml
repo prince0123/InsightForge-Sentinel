@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "insightforge-sentinel"
+version = "1.0.0"
+description = "InsightForge Sentinel - Automated Data Trust Platform"
+readme = "README.md"
+requires-python = ">=3.9"
+
+authors = [
+    { name = "Prince Srivastava" }
+]
+
+dependencies = [
+    "pandas",
+    "rich"
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
